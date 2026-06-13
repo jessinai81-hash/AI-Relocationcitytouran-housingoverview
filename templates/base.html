@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Relocation & Housing Concierge — Abu Dhabi{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- SVG defs for score gauge gradient -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#C9A84C"/>
+      <stop offset="100%" stop-color="#FFD97D"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <div class="brand-logo">🏙️</div>
+      <div>
+        <div class="brand-name">Relocation Concierge</div>
+        <div class="brand-sub">Abu Dhabi · UAE</div>
+      </div>
+    </a>
+    <button class="navbar-toggle" onclick="document.querySelector('.navbar-nav').classList.toggle('open')" aria-label="Menu">☰</button>
+    <ul class="navbar-nav">
+      <li><a class="nav-link" href="/">Home</a></li>
+      <li><a class="nav-link" href="/relocation">Relocation</a></li>
+      <li><a class="nav-link" href="/housing">Housing</a></li>
+      <li><a class="nav-link" href="/temporary-housing">Temp Housing</a></li>
+      <li><a class="nav-link" href="/airport">Airport</a></li>
+      <li><a class="nav-link" href="/citytour">City Tours</a></li>
+      <li><a class="nav-link" href="/recommendations">AI Recs</a></li>
+      <li><a class="nav-link" href="/contact" style="background:rgba(201,168,76,.14);color:var(--gold-light);border-radius:8px;">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===== FLASH MESSAGES ===== -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container" style="padding-top:1rem;">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ 'success' if category == 'success' else 'error' }}">
+          <span style="font-size:1.1rem;">{{ '✓' if category == 'success' else '⚠' }}</span>
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🏙️</div>
+          Relocation Concierge
+        </div>
+        <p class="footer-desc">Your trusted partner for seamless relocation to Abu Dhabi, UAE. From arrival to a settled home — expert guidance every step of the way.</p>
+        <div class="footer-chips">
+          <span class="footer-chip">🇦🇪 Abu Dhabi</span>
+          <span class="footer-chip">24/7 Support</span>
+          <span class="footer-chip">AI Powered</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading">Services</div>
+        <ul class="footer-links">
+          <li><a href="/relocation">› Relocation Planning</a></li>
+          <li><a href="/housing">› Housing Overview</a></li>
+          <li><a href="/temporary-housing">› Temporary Housing</a></li>
+          <li><a href="/airport">› Airport Pickup</a></li>
+          <li><a href="/citytour">› City Tours</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Communities</div>
+        <ul class="footer-links">
+          <li><a href="/housing">› Yas Island</a></li>
+          <li><a href="/housing">› Saadiyat Island</a></li>
+          <li><a href="/housing">› Al Reem Island</a></li>
+          <li><a href="/housing">› Al Raha Beach</a></li>
+          <li><a href="/housing">› Khalifa City</a></li>
+          <li><a href="/housing">› All 14 Areas</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="/recommendations">› AI Recommendations</a></li>
+          <li><a href="/contact">› Contact Support</a></li>
+          <li><a href="/relocation">› Create Profile</a></li>
+          <li><a href="/citytour">› Plan City Tour</a></li>
+          <li><a href="/airport">› Book Pickup</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2024 Relocation & Housing Concierge — Abu Dhabi, UAE</span>
+      <span style="display:flex;align-items:center;gap:1rem;">
+        <span>Powered by AI</span>
+        <span style="width:4px;height:4px;background:rgba(255,255,255,.3);border-radius:50%;"></span>
+        <span>Built for Expats</span>
+        <span style="width:4px;height:4px;background:rgba(255,255,255,.3);border-radius:50%;"></span>
+        <span>Trusted by Families</span>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}AI Recommendations — Abu Dhabi Concierge{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-badge">🤖 AI Powered</div>
+    <h1>Personalized <span class="gradient-text">Relocation Recommendations</span></h1>
+    <p>AI-generated housing shortlists, relocation roadmaps, and executive summaries tailored to your unique profile.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:2.5rem;align-items:start;">
+
+      <!-- LEFT: Forms -->
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        {% if users %}
+        <div class="form-panel">
+          <div class="form-panel-title" style="font-size:1.1rem;">From Saved Profile</div>
+          <div class="form-panel-sub">Select an existing profile for a full AI report.</div>
+          <form method="POST">
+            <div class="form-group">
+              <label class="form-label">Select Profile</label>
+              <select name="user_id" class="form-control">
+                <option value="">Choose a profile…</option>
+                {% for u in users %}
+                <option value="{{ u.id }}" {{ "selected" if selected_user and selected_user.id == u.id }}>
+                  {{ u.name }} — AED {{ "{:,}".format(u.budget or 0) }}/yr
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-gold btn-block">🤖 Generate AI Report</button>
+          </form>
+        </div>
+        {% endif %}
+
+        <div class="form-panel">
+          <div class="form-panel-title" style="font-size:1.1rem;">Quick Recommendation</div>
+          <div class="form-panel-sub">Instant AI recommendations without a full profile.</div>
+          <div class="form-group"><label class="form-label">Your Name</label><input type="text" id="qr_name" class="form-control" placeholder="e.g. James Smith" /></div>
+          <div class="form-group"><label class="form-label">Annual Budget (AED)</label>
+            <select id="qr_budget" class="form-control">
+              <option value="60000">AED 60,000</option><option value="80000">AED 80,000</option>
+              <option value="100000" selected>AED 100,000</option><option value="130000">AED 130,000</option>
+              <option value="160000">AED 160,000</option><option value="200000">AED 200,000</option>
+              <option value="280000">AED 280,000</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Family Size</label>
+            <select id="qr_family" class="form-control">
+              <option value="1">Single</option><option value="2" selected>Couple</option>
+              <option value="3">3</option><option value="4">4</option><option value="5">5+</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Community</label>
+            <select id="qr_community" class="form-control">
+              <option value="any">No Preference</option>
+              {% for c in ["Yas Island","Saadiyat Island","Al Reem Island","Al Raha Beach","Khalifa City","Mohammed Bin Zayed City","Al Reef","Masdar City","Corniche Area","Al Bateen","Al Mushrif"] %}<option>{{ c }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Property Type</label>
+            <select id="qr_type" class="form-control"><option value="any">Any</option><option value="Apartment">Apartment</option><option value="Villa">Villa</option></select>
+          </div>
+          <button onclick="quickRecommend()" class="btn btn-gold btn-block">⚡ Get Instant Recommendations</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Results -->
+      <div>
+        {% if ai_result %}
+        <div class="score-block" style="margin-bottom:1.5rem;">
+          <div class="score-ring">
+            <svg class="score-svg" width="110" height="110" viewBox="0 0 110 110">
+              <circle class="score-track" cx="55" cy="55" r="46"/>
+              <circle class="score-fill" cx="55" cy="55" r="46" data-score="{{ ai_result.score }}"
+                style="stroke-dasharray:{{ 2*3.14159*46 }};stroke-dashoffset:{{ 2*3.14159*46*(1-ai_result.score/100) + 0.001 }};stroke:url(#scoreGrad);fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.5s ease"/>
+            </svg>
+            <div class="score-center"><span class="score-num">{{ ai_result.score }}</span><span class="score-denom">/100</span></div>
+          </div>
+          <div class="score-info">
+            <h3>Readiness: {{ selected_user.name if selected_user }}</h3>
+            <p>{% if ai_result.score >= 85 %}Excellent profile — well-positioned for relocation.{% elif ai_result.score >= 70 %}Good standing — address key items for success.{% else %}Some gaps found — our team can assist.{% endif %}</p>
+          </div>
+        </div>
+        <div class="ai-box" style="margin-bottom:2rem;">
+          <div class="ai-label"><span class="ai-label-dot"></span> AI Executive Relocation Assessment</div>
+          <div class="ai-text">{{ ai_result.summary | replace('\n\n','<br><br>') | replace('\n','<br>') | replace('**','') | safe }}</div>
+        </div>
+        {% if ai_result.housing %}
+        <h3 style="font-size:1.05rem;font-weight:800;color:var(--navy);margin-bottom:1rem;letter-spacing:-.2px;">🏠 Recommended Properties</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:1.1rem;margin-bottom:2rem;">
+          {% for h in ai_result.housing %}
+          <div class="prop-card">
+            <div class="prop-img">{{ "🏡" if h.property_type=="Villa" else "🏢" }}<div class="prop-img-overlay"></div><span class="prop-type-badge">{{ h.property_type }}</span></div>
+            <div class="prop-body">
+              <div class="prop-community">{{ h.community }}</div>
+              <div class="prop-subtitle">{{ h.bedrooms }}BR · {{ "{:,}".format(h.size_sqft) }} sqft</div>
+              <div class="prop-price">AED {{ "{:,}".format(h.rent_annual) }}<span style="font-size:.65rem;font-weight:400;color:var(--text-light)">/yr</span></div>
+              <div class="prop-tags"><span class="prop-tag">Family ★{{ h.family_rating }}/5</span><span class="prop-tag">Lifestyle ★{{ h.lifestyle_score }}/5</span></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div id="qr_results" style="background:var(--surface);border-radius:var(--radius-xl);padding:4rem 2rem;text-align:center;border:1px solid var(--border-light);box-shadow:var(--shadow-sm);">
+          <div style="font-size:4rem;margin-bottom:1.25rem;">🤖</div>
+          <h3 style="font-size:1.4rem;font-weight:800;color:var(--navy);letter-spacing:-.3px;margin-bottom:.625rem;">AI Ready</h3>
+          <p style="color:var(--text-mid);max-width:380px;margin:0 auto 2rem;font-size:.88rem;line-height:1.65;">Select a profile or fill the Quick Recommendation form to generate your personalized AI housing and relocation report.</p>
+          <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <a href="/relocation" class="btn btn-gold">Create Full Profile</a>
+            <button onclick="quickRecommend()" class="btn btn-outline">Quick Recommend</button>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div style="background:var(--navy);border-radius:var(--radius-xl);padding:2.5rem;margin-top:3rem;border:1px solid rgba(201,168,76,.12);">
+      <div style="font-size:.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:1.75rem;text-align:center;">What Our AI Analyses</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:1.5rem;">
+        {% for icon, title, desc in [
+          ("💰","Budget Analysis","Matches properties to your annual budget with monthly breakdown"),
+          ("👨‍👩‍👧","Family Suitability","School proximity, amenities, bedroom requirements"),
+          ("🏙️","Community Fit","Lifestyle, transport, and cultural alignment"),
+          ("📍","Location Intelligence","Commute, hospital access, transport links"),
+          ("📈","Market Insights","Current Abu Dhabi rental trends"),
+          ("🗓️","Timeline Planning","Move date-sensitive milestone recommendations"),
+        ] %}
+        <div style="text-align:center;">
+          <div style="font-size:1.75rem;margin-bottom:.625rem;">{{ icon }}</div>
+          <div style="font-weight:700;font-size:.88rem;color:#fff;margin-bottom:.3rem;">{{ title }}</div>
+          <div style="font-size:.76rem;color:rgba(255,255,255,.55);line-height:1.55;">{{ desc }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}{{ user.name }}'s Relocation Plan — Abu Dhabi Concierge{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div class="page-badge">✅ Profile Ready</div>
+        <h1>Welcome, <span class="gradient-text">{{ user.name }}</span></h1>
+        <p>Your personalized Abu Dhabi relocation plan is ready. Check your checklist and AI recommendations below.</p>
+      </div>
+      <div style="display:flex;gap:.75rem;">
+        <button onclick="window.print()" class="btn btn-ghost">🖨️ Print Plan</button>
+        <a href="/relocation" class="btn btn-gold">+ New Profile</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- SCORE BLOCK -->
+    <div class="score-block" style="margin-bottom:1.75rem;">
+      <div class="score-ring">
+        <svg class="score-svg" width="110" height="110" viewBox="0 0 110 110">
+          <circle class="score-track" cx="55" cy="55" r="46"/>
+          <circle class="score-fill" cx="55" cy="55" r="46"
+            data-score="{{ score }}"
+            style="stroke-dasharray:{{ 2 * 3.14159 * 46 }};stroke-dashoffset:{{ 2 * 3.14159 * 46 }};stroke:url(#scoreGrad);fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.5s ease"/>
+        </svg>
+        <div class="score-center"><span class="score-num">{{ score }}</span><span class="score-denom">/100</span></div>
+      </div>
+      <div class="score-info" style="flex:1;">
+        <h3>Relocation Readiness Score</h3>
+        <p>{% if score >= 85 %}Excellent — you are well-prepared for your Abu Dhabi move.{% elif score >= 70 %}Good standing — a few priority items to action before your move date.{% else %}Some preparation gaps — our concierge team is ready to assist.{% endif %}</p>
+        <div style="margin-top:1.1rem;max-width:380px;">
+          <div class="progress-track"><div class="progress-fill" style="width:{{ score }}%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:.875rem;margin-bottom:2rem;">
+      {% for icon, label, value in [
+        ("👤","Nationality", user.nationality or "—"),
+        ("👨‍👩‍👧","Family Size", user.family_size|string + " person(s)"),
+        ("💰","Annual Budget", "AED " + "{:,}".format(user.budget or 0)),
+        ("🏙️","Preferred Area", user.preferred_community or "Open"),
+        ("🏠","Property", user.property_type or "Any"),
+        ("📅","Move Date", user.move_date or "TBD"),
+        ("🏢","Employer", user.employer or "—"),
+      ] %}
+      <div style="background:var(--surface);border-radius:var(--radius-lg);padding:1.1rem;border:1px solid var(--border-light);box-shadow:var(--shadow-xs);">
+        <div style="font-size:1.4rem;margin-bottom:.4rem;">{{ icon }}</div>
+        <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:.2rem;">{{ label }}</div>
+        <div style="font-size:.875rem;font-weight:700;color:var(--navy);">{{ value }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;align-items:start;">
+
+      <!-- CHECKLIST -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <h2 style="font-size:1.3rem;font-weight:800;color:var(--navy);letter-spacing:-.3px;">Relocation Checklist</h2>
+          <span class="progress-label" style="font-size:.8rem;color:var(--text-mid);"></span>
+        </div>
+        <div class="progress-track" style="margin-bottom:1.5rem;"><div class="progress-fill" style="width:0%"></div></div>
+
+        {% for category, items in checklist.items() %}
+        <div class="checklist-panel">
+          <div class="checklist-cat-label">
+            {{ "✈️" if category == "Before Departure" else ("🇦🇪" if category == "After Arrival" else "🏠") }} {{ category }}
+          </div>
+          {% for item in items %}
+          <div class="checklist-item {{ 'completed' if item.status == 'completed' else '' }}" data-id="{{ item.id }}">
+            <div class="check-box">{{ '✓' if item.status == 'completed' else '' }}</div>
+            <span class="check-text">{{ item.task_name }}</span>
+            <span class="check-pri check-pri-{{ item.priority }}">{{ item.priority }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- AI SUMMARY + HOUSING -->
+      <div>
+        <h2 style="font-size:1.3rem;font-weight:800;color:var(--navy);letter-spacing:-.3px;margin-bottom:1rem;">AI Concierge Assessment</h2>
+        <div class="ai-box" style="margin-bottom:1.5rem;">
+          <div class="ai-label"><span class="ai-label-dot"></span> Personalized Relocation Assessment</div>
+          <div class="ai-text">{{ summary | replace('\n','<br>') | replace('**','') | safe }}</div>
+        </div>
+
+        {% if recommendations %}
+        <h3 style="font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:.875rem;letter-spacing:-.2px;">Recommended Properties</h3>
+        {% for h in recommendations[:3] %}
+        <div style="background:var(--surface);border-radius:var(--radius-lg);padding:1.1rem;border:1px solid var(--border-light);margin-bottom:.875rem;box-shadow:var(--shadow-xs);transition:var(--trans);" onmouseover="this.style.borderColor='rgba(201,168,76,.4)';this.style.boxShadow='var(--shadow-gold)'" onmouseout="this.style.borderColor='var(--border-light)';this.style.boxShadow='var(--shadow-xs)'">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.625rem;">
+            <div>
+              <div style="font-weight:800;color:var(--navy);font-size:.92rem;">{{ h.community }}</div>
+              <div style="font-size:.75rem;color:var(--text-mid);">{{ h.bedrooms }}BR {{ h.property_type }} · {{ "{:,}".format(h.size_sqft) }} sqft</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:1.05rem;font-weight:900;color:var(--navy);letter-spacing:-.5px;">AED {{ "{:,}".format(h.rent_annual) }}</div>
+              <div style="font-size:.7rem;color:var(--text-light);">AED {{ "{:,}".format(h.rent_monthly) }}/mo</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+            <span class="badge badge-gold">Family ★{{ h.family_rating }}/5</span>
+            <span class="badge badge-teal">{{ h.size_sqft }} sqft</span>
+            {% if h.metro_access %}<span class="badge badge-success">🚇 Metro</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+        <a href="/housing" class="btn btn-outline btn-block">View All Housing Options →</a>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- CTA STRIP -->
+    <div style="background:var(--navy);border-radius:var(--radius-xl);padding:2rem;margin-top:2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;border:1px solid rgba(201,168,76,.15);">
+      <div style="color:#fff;">
+        <div style="font-size:1.05rem;font-weight:800;margin-bottom:.25rem;">Continue Your Journey</div>
+        <div style="font-size:.855rem;color:rgba(255,255,255,.6);">Explore housing, book airport pickup, or plan your city orientation tour.</div>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <a href="/housing" class="btn btn-gold">🏠 Browse Housing</a>
+        <a href="/citytour" class="btn btn-glass">🗺️ City Tour</a>
+        <a href="/airport" class="btn btn-glass">✈️ Book Pickup</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

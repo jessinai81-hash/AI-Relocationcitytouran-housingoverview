@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% block title %}Relocation & Housing Concierge — Abu Dhabi{% endblock %}
+
+{% block content %}
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-blob blob-1"></div>
+    <div class="hero-blob blob-2"></div>
+    <div class="hero-blob blob-3"></div>
+    <div class="hero-grid"></div>
+  </div>
+  <div class="container" style="display:grid;grid-template-columns:1.1fr 1fr;gap:4rem;align-items:center;">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="hero-badge-dot"></span> Abu Dhabi Relocation Platform</div>
+      <h1>Your Complete<br><em class="gradient-text">Abu Dhabi</em><br>Relocation&nbsp;Guide</h1>
+      <p class="hero-desc">From airport arrival to permanent home — AI-powered housing recommendations, personalized checklists, city tours, and expert concierge support.</p>
+      <div class="hero-actions">
+        <a href="/relocation" class="btn btn-gold btn-xl">Start My Relocation →</a>
+        <a href="/recommendations" class="btn btn-ghost btn-xl">AI Recommendations</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">{{ stats.communities }}<span>+</span></div>
+          <div class="hero-stat-label">Communities</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">{{ stats.properties }}<span>+</span></div>
+          <div class="hero-stat-label">Properties</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">{{ stats.attractions }}<span>+</span></div>
+          <div class="hero-stat-label">Attractions</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">{{ stats.tours }}<span></span></div>
+          <div class="hero-stat-label">Tour Packages</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Quick Recommend card -->
+    <div class="hero-card">
+      <div style="font-size:.68rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;">⚡ Quick Match — Find Your Ideal Community</div>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div>
+          <label style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:.4rem;">Annual Budget (AED)</label>
+          <select id="h_budget" style="width:100%;padding:.7rem 1rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:.88rem;outline:none;appearance:none;cursor:pointer;">
+            <option value="60000">Up to 60,000</option>
+            <option value="100000" selected>Up to 100,000</option>
+            <option value="140000">Up to 140,000</option>
+            <option value="200000">Up to 200,000</option>
+            <option value="300000">300,000+</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:.4rem;">Family Size</label>
+          <select id="h_family" style="width:100%;padding:.7rem 1rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:.88rem;outline:none;appearance:none;cursor:pointer;">
+            <option value="1">Single</option>
+            <option value="2" selected>Couple</option>
+            <option value="3">Small Family (3)</option>
+            <option value="4">Family (4)</option>
+            <option value="5">Large Family (5+)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:.4rem;">Property Type</label>
+          <select id="h_type" style="width:100%;padding:.7rem 1rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:.88rem;outline:none;appearance:none;cursor:pointer;">
+            <option value="any">Any Type</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Villa">Villa</option>
+          </select>
+        </div>
+        <button onclick="heroQuickFilter()" class="btn btn-gold btn-block" style="margin-top:.25rem;">Find My Match →</button>
+      </div>
+      <div id="hero_results" style="margin-top:1.25rem;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS STRIP ===== -->
+<section class="stats-strip">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="stat-cell">
+        <div class="stat-icon-box">🏘️</div>
+        <div><div class="stat-num">{{ stats.communities }}</div><div class="stat-label">Communities Covered</div></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-icon-box">🏠</div>
+        <div><div class="stat-num">{{ stats.properties }}</div><div class="stat-label">Listed Properties</div></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-icon-box">🗺️</div>
+        <div><div class="stat-num">{{ stats.attractions }}</div><div class="stat-label">Attractions</div></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-icon-box">🧳</div>
+        <div><div class="stat-num">{{ stats.tours }}</div><div class="stat-label">Tour Packages</div></div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-icon-box">🤖</div>
+        <div><div class="stat-num">AI</div><div class="stat-label">Powered Guidance</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:3rem;align-items:start;margin-bottom:3rem;">
+      <div>
+        <div class="eyebrow">Complete Relocation Suite</div>
+        <h2 class="section-title">Everything to Settle in <span class="gradient-text">Abu Dhabi</span></h2>
+        <p class="section-desc">Our concierge platform covers your entire journey — from first planning steps to feeling at home.</p>
+        <a href="/relocation" class="btn btn-navy" style="margin-top:1.75rem;">Get Started →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        {% set services = [
+          ("/relocation","🗂️","Relocation Planner","Create your profile, get a 28-task checklist, AI summary, and readiness score."),
+          ("/housing","🏡","Housing Overview","Compare communities, filter by budget and family size, browse 24+ listings."),
+          ("/temporary-housing","🏨","Temporary Housing","Hotels and serviced apartments for your first 30–45 days in Abu Dhabi."),
+          ("/airport","✈️","Airport Pickup","Book private transfers with professional drivers and real-time flight tracking."),
+          ("/citytour","🗺️","City Tour Planner","Generate day-by-day itineraries across 8 curated Abu Dhabi tour packages."),
+          ("/recommendations","🤖","AI Recommendations","Personalized housing and relocation roadmaps powered by AI analysis."),
+        ] %}
+        {% for href, icon, title, desc in services %}
+        <a href="{{ href }}" class="service-card reveal reveal-delay-{{ loop.index if loop.index <= 4 else loop.index - 4 }}">
+          <div class="service-icon-wrap">{{ icon }}</div>
+          <div class="service-title">{{ title }}</div>
+          <div class="service-desc">{{ desc }}</div>
+          <div class="service-arrow">Explore <span>›</span></div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMMUNITIES (dark) ===== -->
+<section class="dark-section">
+  <div class="container">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2.5rem;">
+      <div>
+        <div class="eyebrow" style="color:var(--gold);">14 Premier Areas</div>
+        <h2 class="section-title" style="color:#fff;">Abu Dhabi's Best <span class="gradient-text">Residential Communities</span></h2>
+      </div>
+      <a href="/housing" class="btn btn-ghost">View All →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:.875rem;">
+      {% set areas = [
+        ("🏎️","Yas Island","Island Living"),("🎨","Saadiyat","Luxury Beachfront"),("🏙️","Al Reem","Urban"),("⛵","Al Raha","Waterfront"),
+        ("🏡","Khalifa City","Family Suburb"),("🏘️","MBZ City","Spacious"),("🌴","Al Reef","Resort Style"),("♻️","Masdar","Eco Smart"),
+        ("💼","Al Maryah","Business Hub"),("🌊","Corniche","Seafront"),("🏛️","Al Bateen","Prestigious"),("🎓","Al Mushrif","Schools"),
+        ("🏠","Al Shamkha","Affordable"),("🌅","Al Bahia","Emerging")
+      ] %}
+      {% for icon, name, type in areas %}
+      <a href="/housing" class="area-pill reveal">
+        <span class="area-pill-icon">{{ icon }}</span>
+        <div class="area-pill-name">{{ name }}</div>
+        <div style="font-size:.6rem;color:rgba(255,255,255,.4);margin-top:.2rem;letter-spacing:.3px;">{{ type }}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== ATTRACTIONS ===== -->
+<section class="section">
+  <div class="container">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2.5rem;">
+      <div>
+        <div class="eyebrow">Discover Abu Dhabi</div>
+        <h2 class="section-title">World-Class <span class="gradient-text">Attractions</span> Await</h2>
+        <p class="section-desc" style="max-width:480px;">From the grandeur of Sheikh Zayed Mosque to the thrills of Yas Island — Abu Dhabi offers extraordinary experiences.</p>
+      </div>
+      <a href="/citytour" class="btn btn-outline">Explore All →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:1.25rem;">
+      {% set highlights = [
+        ("🕌","Sheikh Zayed Grand Mosque","Mosque","Corniche Area","One of the world's most beautiful mosques — 82 domes, 1000+ columns","Free"),
+        ("🎨","Louvre Abu Dhabi","Museum","Saadiyat Island","World-class art under a stunning geometric dome","AED 63"),
+        ("🏎️","Ferrari World","Theme Park","Yas Island","World's fastest roller coaster — Formula Rossa hits 240km/h","AED 345"),
+        ("🌊","SeaWorld Abu Dhabi","Marine Park","Yas Island","World-class ocean discovery & conservation experience","AED 320"),
+        ("🏛️","Qasr Al Watan","Palace","Corniche","Majestic Presidential Palace open to the public","AED 60"),
+        ("🌿","Mangrove Park","Nature","East Abu Dhabi","Kayak through unique mangrove ecosystems","Free")
+      ] %}
+      {% for icon, name, cat, area, desc, fee in highlights %}
+      <div class="attr-card reveal">
+        <div class="attr-img" style="background:linear-gradient(140deg,var(--navy),var(--navy-light));">
+          {{ icon }}
+          <span class="attr-fee">{{ fee }}</span>
+        </div>
+        <div class="attr-body">
+          <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gold-dark);margin-bottom:.2rem;">{{ cat }}</div>
+          <div class="attr-name">{{ name }}</div>
+          <div class="attr-area">📍 {{ area }}</div>
+          <div class="attr-desc">{{ desc }}</div>
+          <div class="attr-rating">★ 4.7 <span style="color:var(--text-light);font-weight:400;margin-left:.25rem;">Exceptional</span></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<div class="cta-banner">
+  <div class="container" style="text-align:center;position:relative;z-index:1;">
+    <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(10,22,40,.1);border:1px solid rgba(10,22,40,.15);color:rgba(10,22,40,.7);padding:.35rem 1rem;border-radius:50px;font-size:.68rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:1.5rem;">🚀 Get Started Today</div>
+    <h2 class="cta-banner h2" style="font-size:2.5rem;font-weight:900;color:var(--navy);letter-spacing:-.6px;">Ready for Your Abu Dhabi Move?</h2>
+    <p style="font-size:1rem;color:rgba(10,22,40,.7);margin:1rem auto 2.5rem;max-width:520px;line-height:1.7;">Create your relocation profile in minutes and receive a personalized AI roadmap, housing shortlist, and 28-task checklist.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="/relocation" class="btn btn-navy btn-xl">Create My Relocation Profile</a>
+      <a href="/contact" class="btn btn-xl" style="background:rgba(10,22,40,.12);color:var(--navy);border:1.5px solid rgba(10,22,40,.2);">Talk to a Concierge</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function heroQuickFilter() {
+  const budget = document.getElementById("h_budget").value;
+  const family_size = document.getElementById("h_family").value;
+  const property_type = document.getElementById("h_type").value;
+  const res = document.getElementById("hero_results");
+  res.innerHTML = '<div style="color:rgba(255,255,255,.6);font-size:.82rem;text-align:center;padding:.5rem;">Searching...</div>';
+  try {
+    const r = await fetch(`/api/housing/filter?budget=${budget}&family_size=${family_size}&community=any&property_type=${property_type}`);
+    const data = await r.json();
+    if (!data.length) { res.innerHTML = '<div style="color:rgba(255,255,255,.5);font-size:.82rem;text-align:center;">No matches — try a higher budget.</div>'; return; }
+    res.innerHTML = data.slice(0,3).map(h => `
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.875rem;margin-bottom:.625rem;display:flex;justify-content:space-between;align-items:center;gap:.75rem;">
+        <div>
+          <div style="font-weight:700;color:#fff;font-size:.88rem;">${h.community}</div>
+          <div style="font-size:.74rem;color:rgba(255,255,255,.5);">${h.bedrooms}BR ${h.property_type} · ★${h.family_rating}/5 Family</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-weight:800;color:var(--gold-light);font-size:.95rem;">AED ${h.rent_annual.toLocaleString()}</div>
+          <div style="font-size:.68rem;color:rgba(255,255,255,.4);">per year</div>
+        </div>
+      </div>`).join('') + `<a href="/housing" style="display:block;text-align:center;color:var(--gold-light);font-size:.78rem;font-weight:600;margin-top:.75rem;text-decoration:none;">View all ${data.length} matches →</a>`;
+  } catch(e) { res.innerHTML = ''; }
+}
+</script>
+{% endblock %}

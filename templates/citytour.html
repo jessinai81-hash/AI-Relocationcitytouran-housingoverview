@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}City Tour Planner — Abu Dhabi Concierge{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-badge">🗺️ City Exploration</div>
+    <h1>Abu Dhabi <span class="gradient-text">City Tour Planner</span></h1>
+    <p>{{ tours|length }} curated packages · {{ attractions|length }} iconic attractions · AI-generated day-by-day itineraries</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- TOUR CARDS -->
+    <div style="margin-bottom:2.5rem;"><div class="eyebrow">Choose Your Package</div><h2 class="section-title">Curated <span class="gradient-text">Tour Packages</span></h2></div>
+
+    {% set tour_icons = {"highlights":"⭐","orientation":"🗺️","family":"👨‍👩‍👧","luxury":"👑","cultural":"🕌","weekend":"🌴","shopping":"🛍️"} %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.25rem;margin-bottom:3rem;">
+      {% for t in tours %}
+      <div class="tour-card reveal">
+        <div class="tour-head">
+          <span class="tour-dur-pill">{{ t.duration_days }} Day{{ "s" if t.duration_days > 1 }}</span>
+          <span class="tour-icon">{{ tour_icons.get(t.category, "🗺️") }}</span>
+          <div class="tour-name">{{ t.tour_name }}</div>
+          <div class="tour-cat">{{ t.category.replace("_"," ").title() }}</div>
+        </div>
+        <div class="tour-body">
+          <div class="tour-desc">{{ t.description }}</div>
+          <div class="tour-best">👥 Best for: {{ t.best_for }}</div>
+          <div class="tour-footer">
+            <div>
+              <div class="tour-price">AED {{ "{:,}".format(t.estimated_cost_aed) }}</div>
+              <div class="tour-price-sub">estimated budget</div>
+            </div>
+            <button onclick="generateItinerary({{ t.id }})" class="btn btn-gold btn-sm">Build Itinerary →</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- ITINERARY OUTPUT -->
+    <div style="margin-bottom:3rem;">
+      <div style="margin-bottom:1.5rem;"><div class="eyebrow">AI Generated</div><h2 class="section-title">Your <span class="gradient-text">Day-by-Day Itinerary</span></h2></div>
+      <div id="itinerary_output" style="background:var(--surface);border-radius:var(--radius-xl);padding:2.5rem;border:1px solid var(--border-light);box-shadow:var(--shadow-sm);min-height:100px;">
+        <div style="text-align:center;color:var(--text-light);padding:1.5rem;">
+          <div style="font-size:2.5rem;margin-bottom:.75rem;">📅</div>
+          Click "Build Itinerary" on any tour above to generate your personalised day-by-day Abu Dhabi plan
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="margin-bottom:3rem;">
+      <div style="margin-bottom:1.5rem;"><div class="eyebrow">AI Assistant</div><h2 class="section-title">Abu Dhabi <span class="gradient-text">FAQ</span></h2></div>
+      <div class="faq-wrap">
+        <p style="font-size:.875rem;color:var(--text-mid);margin-bottom:1.25rem;">Ask about visa, schools, banks, driving, cost of living, weather, safety, and culture.</p>
+        <div class="faq-row">
+          <input type="text" id="faq_input" class="form-control" placeholder="e.g. How do I open a bank account in Abu Dhabi?" />
+          <button onclick="askFAQ()" class="btn btn-gold" style="white-space:nowrap;">Ask →</button>
+        </div>
+        <div id="faq_answer" class="faq-answer"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;">
+          {% for q in ["Visa process","Best schools","Open bank account","Cost of living","Abu Dhabi weather","Is it safe?","UAE culture","Driving license"] %}
+          <button onclick="document.getElementById('faq_input').value='{{ q }}';askFAQ()" class="btn btn-outline btn-sm">{{ q }}</button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ATTRACTIONS -->
+    <div style="margin-bottom:1.75rem;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div><div class="eyebrow">Abu Dhabi</div><h2 class="section-title">All <span class="gradient-text">Attractions</span></h2></div>
+    </div>
+
+    <!-- Category filter -->
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.75rem;">
+      <button class="btn btn-navy btn-sm attr-filter-btn" onclick="filterAttractions('all')">All</button>
+      {% for cat in categories %}
+      <button class="btn btn-outline btn-sm attr-filter-btn" onclick="filterAttractions('{{ cat }}')">{{ cat.replace("_"," ").title() }}</button>
+      {% endfor %}
+    </div>
+
+    {% set cat_icons = {"mosque":"🕌","museum":"🏛️","theme_park":"🎢","water_park":"💦","palace":"👑","beach":"🏖️","nature":"🌿","viewpoint":"🔭","cultural":"🎭","shopping":"🛍️","sport":"⚽","hotel":"🏨","adventure":"🏜️"} %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:1.1rem;">
+      {% for a in attractions %}
+      <div class="attr-card reveal" data-category="{{ a.category }}">
+        <div class="attr-img">{{ cat_icons.get(a.category,"🗺️") }}<span class="attr-fee">{{ "Free" if a.entry_fee_aed == 0 else "AED " + a.entry_fee_aed|string }}</span></div>
+        <div class="attr-body">
+          <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gold-dark);margin-bottom:.2rem;">{{ a.category.replace("_"," ").title() }}</div>
+          <div class="attr-name">{{ a.name }}</div>
+          <div class="attr-area">📍 {{ a.area }}</div>
+          <div class="attr-desc">{{ a.description[:95] }}{% if a.description|length > 95 %}…{% endif %}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="attr-rating">★ {{ a.rating }}</div>
+            {% if a.family_friendly %}<span class="badge badge-success" style="font-size:.65rem;">👨‍👩‍👧 Family</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

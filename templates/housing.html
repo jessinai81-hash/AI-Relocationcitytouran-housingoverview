@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Housing Overview — Abu Dhabi Concierge{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-badge">🏡 Housing Overview</div>
+    <h1>Abu Dhabi Housing &amp; <span class="gradient-text">Communities</span></h1>
+    <p>Compare {{ communities|length }} communities, browse {{ housing_by_community.values()|map('length')|sum }} listings, and find your perfect home.</p>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div style="font-size:.78rem;font-weight:700;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;">🔍 Filter Properties</div>
+      <div class="filter-grid">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Max Annual Budget</label>
+          <select id="budget_filter" class="form-control">
+            <option value="60000">AED 60,000</option>
+            <option value="80000">AED 80,000</option>
+            <option value="100000" selected>AED 100,000</option>
+            <option value="130000">AED 130,000</option>
+            <option value="170000">AED 170,000</option>
+            <option value="200000">AED 200,000</option>
+            <option value="300000">AED 300,000+</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Family Size</label>
+          <select id="family_filter" class="form-control">
+            <option value="1">1 Person</option>
+            <option value="2" selected>2 People</option>
+            <option value="3">3 People</option>
+            <option value="4">4 People</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Community</label>
+          <select id="community_filter" class="form-control">
+            <option value="any">All Communities</option>
+            {% for c in communities %}<option>{{ c }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Property Type</label>
+          <select id="type_filter" class="form-control">
+            <option value="any">All Types</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Villa">Villa</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button onclick="filterHousing()" class="btn btn-gold btn-block">Search →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTERED RESULTS -->
+    <div id="filtered_results" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;margin-bottom:3.5rem;">
+      <div style="text-align:center;padding:2.5rem;color:var(--text-light);grid-column:1/-1;">Use the filters above and click Search.</div>
+    </div>
+
+    <!-- COMMUNITY TABS -->
+    <div style="margin-bottom:2rem;"><div class="eyebrow">Browse by Area</div><h2 class="section-title">All <span class="gradient-text">14 Communities</span></h2></div>
+
+    <div class="tab-container">
+      <div class="tab-pills" style="overflow-x:auto;flex-wrap:nowrap;">
+        {% for community in communities %}
+        <button class="tab-pill" data-tab="tab_{{ loop.index }}">
+          {{ community_info[community].icon if community in community_info else "🏙️" }} {{ community }}
+        </button>
+        {% endfor %}
+      </div>
+
+      {% for community in communities %}
+      <div class="tab-pane" id="tab_{{ loop.index }}">
+        {% if community in community_info %}
+        <div style="background:linear-gradient(140deg,var(--navy),var(--navy-light));border-radius:var(--radius-xl);padding:2rem;margin-bottom:1.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border:1px solid rgba(201,168,76,.15);">
+          <div>
+            <div style="font-size:2.5rem;margin-bottom:.5rem;">{{ community_info[community].icon }}</div>
+            <h3 style="font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-.4px;margin-bottom:.25rem;">{{ community }}</h3>
+            <div style="color:var(--gold-light);font-size:.875rem;font-weight:600;">{{ community_info[community].tagline }}</div>
+          </div>
+          <span class="badge badge-gold" style="font-size:.82rem;padding:.5rem 1.25rem;">{{ community_info[community].type }}</span>
+        </div>
+        {% endif %}
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;">
+          {% for h in housing_by_community.get(community, []) %}
+          <div class="prop-card">
+            <div class="prop-img">{{ "🏡" if h.property_type == "Villa" else "🏢" }}<div class="prop-img-overlay"></div>
+              <span class="prop-type-badge">{{ h.property_type }}</span><div class="prop-fav">♡</div>
+            </div>
+            <div class="prop-body">
+              <div class="prop-community">{{ h.community }}</div>
+              <div class="prop-subtitle">{{ h.bedrooms }} Bedroom · {{ "{:,}".format(h.size_sqft) }} sqft</div>
+              <div class="prop-price">AED {{ "{:,}".format(h.rent_annual) }}<span style="font-size:.65rem;font-weight:500;color:var(--text-light)">/yr</span></div>
+              <div class="prop-price-sub">≈ AED {{ "{:,}".format(h.rent_monthly) }} / month</div>
+              <div class="prop-meta">
+                <div class="prop-meta-item">🎓 <strong>{{ h.school_proximity_km }}km</strong> school</div>
+                <div class="prop-meta-item">🏥 <strong>{{ h.hospital_proximity_km }}km</strong> hospital</div>
+                {% if h.metro_access %}<div class="prop-meta-item">🚇 <strong>Metro</strong></div>{% endif %}
+              </div>
+              <div class="prop-tags">
+                <span class="prop-tag">Family ★{{ h.family_rating }}/5</span>
+                <span class="prop-tag">Lifestyle ★{{ h.lifestyle_score }}/5</span>
+              </div>
+            </div>
+            <div class="prop-footer"><a href="/recommendations" class="btn btn-gold btn-sm btn-block">AI Match →</a></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div style="margin:3.5rem 0 1.25rem;"><div class="eyebrow">Quick Compare</div><h2 class="section-title">Community <span class="gradient-text">Comparison</span></h2></div>
+    <div class="tbl-wrap">
+      <table class="data-tbl">
+        <thead>
+          <tr><th>Community</th><th>Type</th><th>Budget Range (AED/yr)</th><th>School Access</th><th>Family</th><th>Lifestyle</th></tr>
+        </thead>
+        <tbody>
+          {% for community in communities %}{% set props = housing_by_community.get(community, []) %}{% if props %}
+          {% set min_r = props | map(attribute='rent_annual') | min %}
+          {% set max_r = props | map(attribute='rent_annual') | max %}
+          <tr>
+            <td><strong>{{ community_info[community].icon if community in community_info else "🏙️" }} {{ community }}</strong>
+              <div style="font-size:.72rem;color:var(--text-light);">{{ community_info[community].tagline if community in community_info else "" }}</div></td>
+            <td><span class="badge badge-navy">{{ community_info[community].type if community in community_info else "Residential" }}</span></td>
+            <td style="font-weight:600;">{{ "{:,}".format(min_r) }} – {{ "{:,}".format(max_r) }}</td>
+            <td>{{ props[0].school_proximity_km }}km</td>
+            <td><span style="color:var(--gold);">★</span> {{ props[0].family_rating }}/5</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:.5rem;">
+                <div class="progress-track" style="width:55px;"><div class="progress-fill" style="width:{{ props[0].lifestyle_score * 20 }}%;"></div></div>
+                <span style="font-size:.78rem;">{{ props[0].lifestyle_score }}/5</span>
+              </div>
+            </td>
+          </tr>{% endif %}{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script>document.addEventListener("DOMContentLoaded", filterHousing);</script>
+{% endblock %}

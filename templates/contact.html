@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Contact Support — Abu Dhabi Concierge{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-badge">📞 Support</div>
+    <h1>Contact Our <span class="gradient-text">Concierge Team</span></h1>
+    <p>Expert relocation specialists available 24/7 for your Abu Dhabi move, housing search, and city orientation.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:2.5rem;align-items:start;">
+
+      <div class="form-panel">
+        <div class="form-panel-title">Send Us a Message</div>
+        <div class="form-panel-sub">We respond within 2 hours during business hours and 6 hours overnight.</div>
+        <form method="POST" action="/contact">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Full Name *</label><input type="text" name="name" class="form-control" placeholder="Your full name" required /></div>
+            <div class="form-group"><label class="form-label">Email *</label><input type="email" name="email" class="form-control" placeholder="your@email.com" required /></div>
+          </div>
+          <div class="form-group"><label class="form-label">Phone / WhatsApp</label><input type="tel" name="phone" class="form-control" placeholder="+971 XX XXX XXXX" /></div>
+          <div class="form-group"><label class="form-label">Subject</label>
+            <select name="subject" class="form-control">
+              {% for s in ["Relocation Planning","Housing Inquiry","Temporary Accommodation","Airport Pickup","City Tour Booking","Visa & Documentation","School Inquiry","Corporate Relocation","General Inquiry"] %}
+              <option>{{ s }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Message *</label><textarea name="message" class="form-control" rows="5" placeholder="Describe your needs…" required></textarea></div>
+          <button type="submit" class="btn btn-gold btn-lg btn-block">✉️ Send Message</button>
+        </form>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:1.1rem;">
+        {% for icon, label, value, sub in [
+          ("📞","Phone & WhatsApp","+971 2 XXX XXXX","Available 24/7"),
+          ("✉️","Email","concierge@reloabudhabi.ae","Response within 2 hours"),
+          ("🏢","Office","Al Bateen, Abu Dhabi","Sun–Thu: 9AM – 6PM"),
+          ("💬","WhatsApp","Chat with us directly","Instant support"),
+        ] %}
+        <div style="background:var(--surface);border-radius:var(--radius-lg);padding:1.25rem;border:1px solid var(--border-light);box-shadow:var(--shadow-xs);display:flex;align-items:center;gap:1rem;">
+          <div style="width:46px;height:46px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;box-shadow:0 4px 12px rgba(201,168,76,.3);">{{ icon }}</div>
+          <div>
+            <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:.15rem;">{{ label }}</div>
+            <div style="font-weight:700;color:var(--navy);font-size:.92rem;">{{ value }}</div>
+            <div style="font-size:.74rem;color:var(--text-light);">{{ sub }}</div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <div style="background:var(--navy-card);border-radius:var(--radius-xl);padding:1.75rem;border:1px solid rgba(201,168,76,.15);">
+          <div style="font-size:.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Quick Access</div>
+          {% for href, label in [("/relocation","🗂️ Start Relocation Plan"),("/housing","🏡 Browse Properties"),("/temporary-housing","🏨 Temporary Housing"),("/airport","✈️ Book Pickup"),("/citytour","🗺️ Plan City Tour"),("/recommendations","🤖 AI Recommendations")] %}
+          <a href="{{ href }}" style="display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;color:rgba(255,255,255,.78);text-decoration:none;font-size:.855rem;border-bottom:1px solid rgba(255,255,255,.06);transition:var(--trans);" onmouseover="this.style.color='var(--gold-light)';this.style.paddingLeft='.35rem'" onmouseout="this.style.color='rgba(255,255,255,.78)';this.style.paddingLeft='0'">
+            {{ label }} <span style="opacity:.4;">›</span>
+          </a>
+          {% endfor %}
+        </div>
+
+        <div style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.22);border-radius:var(--radius-lg);padding:1.35rem;">
+          <div style="font-weight:700;color:var(--navy);margin-bottom:.35rem;font-size:.92rem;">🏢 Corporate Relocation</div>
+          <p style="font-size:.82rem;color:var(--text-mid);margin-bottom:.875rem;line-height:1.6;">We partner with ADNOC, Etihad, ADCB and other major Abu Dhabi employers for streamlined corporate relocation packages.</p>
+          <a href="mailto:corporate@reloabudhabi.ae" class="btn btn-gold btn-sm">Contact Corporate Team</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:3.5rem;">
+      <div style="margin-bottom:1.75rem;"><div class="eyebrow">Common Questions</div><h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(295px,1fr));gap:1rem;">
+        {% for q, a in [
+          ("How long does the UAE visa process take?","Employment visas take 2–4 weeks. The process includes medical fitness test, Emirates ID application, and residency visa stamping."),
+          ("What documents do I need for Abu Dhabi?","Passport, employment contract, offer letter, educational certificates, marriage certificate (if applicable), and passport photos."),
+          ("When should I start house hunting?","Begin within the first 2 weeks of arrival while in temporary accommodation. Allow 2–4 weeks for search and 1–2 weeks for contract signing."),
+          ("Are international schools hard to get into?","Top schools fill quickly. Apply 3–6 months before September intake. We can advise on current availability and registration."),
+          ("How does Ejari work?","Ejari is Abu Dhabi's mandatory tenancy registration via TAMM. Your landlord registers the contract within 30 days of signing."),
+          ("What's the cost of living for a family?","A family of 4 typically needs AED 150,000–250,000/year for housing, AED 50,000–80,000 for school fees, plus AED 45,000–75,000 for living costs."),
+        ] %}
+        <div style="background:var(--surface);border-radius:var(--radius-lg);padding:1.25rem;border:1px solid var(--border-light);box-shadow:var(--shadow-xs);transition:var(--trans);" onmouseover="this.style.borderColor='rgba(201,168,76,.35)';this.style.boxShadow='var(--shadow-sm)'" onmouseout="this.style.borderColor='var(--border-light)';this.style.boxShadow='var(--shadow-xs)'">
+          <div style="font-weight:700;color:var(--navy);margin-bottom:.5rem;font-size:.88rem;line-height:1.4;">{{ q }}</div>
+          <div style="font-size:.8rem;color:var(--text-mid);line-height:1.65;">{{ a }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

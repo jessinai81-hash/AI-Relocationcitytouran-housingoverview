@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}Relocation Planner — Abu Dhabi Concierge{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-badge">🗂️ Relocation Planning</div>
+    <h1>Create Your <span class="gradient-text">Relocation Profile</span></h1>
+    <p>Tell us about your move and we'll instantly generate a personalized checklist, housing shortlist, and AI-powered roadmap.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:2.5rem;align-items:start;">
+
+      <!-- FORM -->
+      <div class="form-panel">
+        <div class="form-panel-title">Your Relocation Profile</div>
+        <div class="form-panel-sub">Complete your profile to receive your AI-powered Abu Dhabi relocation plan.</div>
+        <form method="POST" action="/relocation">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" name="name" class="form-control" placeholder="e.g. Sarah Mitchell" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" placeholder="sarah@company.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nationality *</label>
+              <input type="text" name="nationality" class="form-control" placeholder="e.g. British, Indian, US" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Family Size</label>
+              <select name="family_size" class="form-control">
+                <option value="1">1 (Single)</option>
+                <option value="2" selected>2 (Couple)</option>
+                <option value="3">3 (Small Family)</option>
+                <option value="4">4 (Family)</option>
+                <option value="5">5 (Large Family)</option>
+                <option value="6">6+ (Extended Family)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Annual Housing Budget (AED)</label>
+            <input type="range" id="bSlider" min="40000" max="350000" step="5000" value="100000" data-display="#bDisplay" data-prefix="AED " />
+            <div style="display:flex;justify-content:space-between;margin-top:.5rem;">
+              <span style="font-size:.72rem;color:var(--text-light);">AED 40,000</span>
+              <strong id="bDisplay" style="color:var(--gold-dark);font-size:.88rem;">AED 100,000</strong>
+              <span style="font-size:.72rem;color:var(--text-light);">AED 350,000+</span>
+            </div>
+            <input type="hidden" name="budget" id="bHidden" value="100000" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Preferred Community</label>
+              <select name="preferred_community" class="form-control">
+                <option value="any">No Preference</option>
+                {% for c in ["Yas Island","Saadiyat Island","Al Reem Island","Al Raha Beach","Khalifa City","Mohammed Bin Zayed City","Al Reef","Masdar City","Al Maryah Island","Corniche Area","Al Bateen","Al Mushrif","Al Shamkha","Al Bahia"] %}
+                <option>{{ c }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Property Type</label>
+              <select name="property_type" class="form-control">
+                <option value="any">Any Type</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Villa">Villa</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Planned Move Date</label>
+              <input type="date" name="move_date" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Employer / Company</label>
+              <input type="text" name="employer" class="form-control" placeholder="e.g. ADNOC, Etihad, ADCB" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-gold btn-lg btn-block" style="margin-top:.5rem;">🚀 Create My Relocation Profile</button>
+        </form>
+      </div>
+
+      <!-- RIGHT INFO -->
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        <div style="background:var(--navy-card);border-radius:var(--radius-xl);padding:2rem;border:1px solid rgba(201,168,76,.15);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(201,168,76,.15),transparent);pointer-events:none;"></div>
+          <div style="font-size:.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;">What You'll Receive</div>
+          {% set features = [
+            ("🗂️","Personalized Checklist","28 tailored tasks across Before Departure, After Arrival, and Move-In phases"),
+            ("🏠","Housing Shortlist","Top properties matched to your budget, family size, and community preference"),
+            ("🤖","AI Concierge Summary","Executive AI assessment with recommended communities and strategy"),
+            ("📊","Readiness Score","Your Relocation Readiness Score out of 100 with priority actions"),
+          ] %}
+          {% for icon, title, desc in features %}
+          <div style="display:flex;gap:.875rem;margin-bottom:1.1rem;align-items:flex-start;">
+            <div style="width:38px;height:38px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">{{ icon }}</div>
+            <div>
+              <div style="font-weight:700;font-size:.88rem;color:#fff;margin-bottom:.15rem;">{{ title }}</div>
+              <div style="font-size:.78rem;color:rgba(255,255,255,.55);line-height:1.5;">{{ desc }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div style="background:var(--surface);border-radius:var(--radius-xl);padding:1.75rem;border:1px solid var(--border-light);box-shadow:var(--shadow-xs);">
+          <div style="font-size:.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:1.1rem;">Relocation Timeline</div>
+          {% set tl = [
+            ("6–8 Weeks Before","Visa, documentation, school research"),
+            ("4 Weeks Before","Arrange shipping, book temp housing"),
+            ("Arrival Day","Airport transfer, check-in, orientation"),
+            ("Week 1","Emirates ID, SIM, bank account"),
+            ("Month 1","Housing search, school enrollment"),
+            ("Month 2","Sign tenancy, move in, settle"),
+          ] %}
+          {% for phase, task in tl %}
+          <div style="display:flex;gap:.875rem;margin-bottom:.875rem;align-items:flex-start;">
+            <div style="width:9px;height:9px;background:var(--gold);border-radius:50%;margin-top:4px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-size:.8rem;font-weight:700;color:var(--navy);">{{ phase }}</div>
+              <div style="font-size:.75rem;color:var(--text-mid);">{{ task }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+  const s = document.getElementById("bSlider");
+  const h = document.getElementById("bHidden");
+  if (s && h) s.addEventListener("input", () => { h.value = s.value; });
+</script>
+{% endblock %}

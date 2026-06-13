@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Temporary Housing — Abu Dhabi Concierge{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-badge">🏨 Temporary Accommodation</div>
+    <h1>Hotels &amp; <span class="gradient-text">Serviced Apartments</span></h1>
+    <p>Quality temporary housing for your first weeks in Abu Dhabi — from luxury hotels to fully-furnished serviced apartments.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.25);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:2.5rem;display:flex;gap:1rem;align-items:flex-start;">
+      <div style="font-size:1.6rem;flex-shrink:0;">💡</div>
+      <div>
+        <div style="font-weight:700;color:var(--navy);margin-bottom:.2rem;">Concierge Tip: Plan for 30–45 Days</div>
+        <div style="font-size:.875rem;color:var(--text-mid);line-height:1.65;">We recommend a serviced apartment for your first month. This gives you time to explore communities, attend property viewings, set up banking, and make an informed decision without daily hotel pressure.</div>
+      </div>
+    </div>
+
+    <div class="tab-container">
+      <div class="tab-pills">
+        <button class="tab-pill" data-tab="t_hotels">🏨 Hotels ({{ hotels|length }})</button>
+        <button class="tab-pill" data-tab="t_serviced">🏢 Serviced Apartments ({{ serviced|length }})</button>
+      </div>
+
+      <div class="tab-pane" id="t_hotels">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.5rem;">
+          {% for h in hotels %}
+          <div style="background:var(--surface);border-radius:var(--radius-xl);overflow:hidden;border:1px solid var(--border-light);box-shadow:var(--shadow-sm);transition:var(--trans);" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='var(--shadow-lg)';this.style.borderColor='rgba(201,168,76,.3)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)';this.style.borderColor='var(--border-light)'">
+            <div style="height:155px;background:linear-gradient(140deg,var(--navy),var(--navy-light));display:flex;align-items:center;justify-content:center;font-size:3.75rem;position:relative;">
+              🏨
+              <span class="prop-type-badge">Hotel</span>
+              <span style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);color:#fff;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700;">★ {{ h.rating }}</span>
+            </div>
+            <div style="padding:1.5rem;">
+              <div style="font-size:1.05rem;font-weight:800;color:var(--navy);letter-spacing:-.2px;margin-bottom:.2rem;">{{ h.name }}</div>
+              <div style="font-size:.78rem;color:var(--text-light);margin-bottom:1rem;">📍 {{ h.location }}</div>
+              <div style="font-size:1.5rem;font-weight:900;color:var(--navy);letter-spacing:-1px;">AED {{ "{:,}".format(h.price_per_night) }}</div>
+              <div style="font-size:.72rem;color:var(--text-light);margin-bottom:1rem;">per night · Min stay: {{ h.min_stay_days }} night(s)</div>
+              <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem;">
+                {% for f in h.features.split(",")[:4] %}<span class="prop-tag">{{ f }}</span>{% endfor %}
+              </div>
+              {% if h.contact %}<a href="tel:{{ h.contact }}" style="font-size:.8rem;color:var(--teal);font-weight:600;text-decoration:none;display:block;margin-bottom:.875rem;">📞 {{ h.contact }}</a>{% endif %}
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.625rem;">
+                <div style="background:rgba(201,168,76,.06);border-radius:9px;padding:.625rem;text-align:center;">
+                  <div style="font-weight:800;font-size:.88rem;color:var(--navy);">AED {{ "{:,}".format(h.price_per_night * 7) }}</div>
+                  <div style="font-size:.66rem;color:var(--text-light);">7 nights</div>
+                </div>
+                <div style="background:rgba(201,168,76,.06);border-radius:9px;padding:.625rem;text-align:center;">
+                  <div style="font-weight:800;font-size:.88rem;color:var(--navy);">AED {{ "{:,}".format(h.price_per_night * 30) }}</div>
+                  <div style="font-size:.66rem;color:var(--text-light);">30 nights</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="tab-pane" id="t_serviced">
+        <div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;font-size:.875rem;color:var(--text-mid);">
+          🏢 <strong>Serviced apartments</strong> include full kitchens, laundry, and living areas — significantly cheaper than hotels for 7–90+ day stays while giving you a home-like base during your property search.
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.5rem;">
+          {% for s in serviced %}
+          <div style="background:var(--surface);border-radius:var(--radius-xl);overflow:hidden;border:1px solid rgba(0,180,216,.15);box-shadow:var(--shadow-sm);transition:var(--trans);" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='var(--shadow-lg)';this.style.borderColor='var(--teal)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)';this.style.borderColor='rgba(0,180,216,.15)'">
+            <div style="height:155px;background:linear-gradient(140deg,#0A6B6D,var(--teal));display:flex;align-items:center;justify-content:center;font-size:3.75rem;position:relative;">
+              🏢
+              <span style="position:absolute;top:10px;left:10px;background:var(--teal);color:#fff;padding:.22rem .75rem;border-radius:50px;font-size:.7rem;font-weight:800;">Serviced Apt</span>
+              <span style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);color:#fff;padding:.2rem .65rem;border-radius:50px;font-size:.75rem;font-weight:700;">★ {{ s.rating }}</span>
+            </div>
+            <div style="padding:1.5rem;">
+              <div style="font-size:1.05rem;font-weight:800;color:var(--navy);letter-spacing:-.2px;margin-bottom:.2rem;">{{ s.name }}</div>
+              <div style="font-size:.78rem;color:var(--text-light);margin-bottom:1rem;">📍 {{ s.location }}</div>
+              <div style="font-size:1.5rem;font-weight:900;color:var(--teal);letter-spacing:-1px;">AED {{ "{:,}".format(s.price_per_night) }}</div>
+              <div style="font-size:.72rem;color:var(--text-light);margin-bottom:1rem;">per night · Min stay: {{ s.min_stay_days }} night(s)</div>
+              <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem;">
+                {% for f in s.features.split(",")[:4] %}<span class="prop-tag prop-tag-teal">{{ f }}</span>{% endfor %}
+              </div>
+              {% if s.contact %}<a href="tel:{{ s.contact }}" style="font-size:.8rem;color:var(--teal);font-weight:600;text-decoration:none;display:block;margin-bottom:.875rem;">📞 {{ s.contact }}</a>{% endif %}
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.625rem;">
+                <div style="background:rgba(0,180,216,.06);border-radius:9px;padding:.625rem;text-align:center;">
+                  <div style="font-weight:800;font-size:.88rem;color:var(--navy);">AED {{ "{:,}".format(s.price_per_night * 30) }}</div>
+                  <div style="font-size:.66rem;color:var(--text-light);">30 nights</div>
+                </div>
+                <div style="background:rgba(0,180,216,.06);border-radius:9px;padding:.625rem;text-align:center;">
+                  <div style="font-weight:800;font-size:.88rem;color:var(--navy);">AED {{ "{:,}".format(s.price_per_night * 45) }}</div>
+                  <div style="font-size:.66rem;color:var(--text-light);">45 nights</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--navy);border-radius:var(--radius-xl);padding:2rem;margin-top:2.5rem;text-align:center;border:1px solid rgba(201,168,76,.15);">
+      <h3 style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:.4rem;">Need Help Choosing?</h3>
+      <p style="color:rgba(255,255,255,.6);margin-bottom:1.5rem;font-size:.88rem;">Our concierge team can negotiate extended-stay rates and arrange special packages for your budget and family.</p>
+      <a href="/contact" class="btn btn-gold">Contact Our Concierge →</a>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

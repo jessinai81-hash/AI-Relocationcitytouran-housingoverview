@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Airport Pickup — Abu Dhabi Concierge{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-badge">✈️ Airport Services</div>
+    <h1>Airport Arrival &amp; <span class="gradient-text">Pickup</span></h1>
+    <p>Book your private airport transfer and ensure a smooth, stress-free welcome to Abu Dhabi International Airport.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:2.5rem;align-items:start;">
+
+      <!-- FORM -->
+      <div class="form-panel">
+        <div class="form-panel-title">Book Airport Pickup</div>
+        <div class="form-panel-sub">Arrange your private transfer from Abu Dhabi International Airport.</div>
+        <form method="POST" action="/airport">
+          <div class="form-group">
+            <label class="form-label">Passenger Name *</label>
+            <input type="text" name="passenger_name" class="form-control" placeholder="Full name as on passport" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Flight Number *</label>
+              <input type="text" name="flight_number" class="form-control" placeholder="e.g. EY 101" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Terminal</label>
+              <select name="terminal" class="form-control">
+                <option>T1</option><option>T3</option><option>T1A</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Arrival Date *</label>
+              <input type="date" name="arrival_date" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Arrival Time *</label>
+              <input type="time" name="arrival_time" class="form-control" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Luggage Pieces</label>
+            <select name="luggage_count" class="form-control">
+              <option value="1">1</option><option value="2" selected>2</option>
+              <option value="3">3</option><option value="4">4</option><option value="5">5+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Special Requirements</label>
+            <textarea name="special_requirements" class="form-control" rows="3" placeholder="Child seats, wheelchair, VIP meet &amp; greet…"></textarea>
+          </div>
+          <button type="submit" class="btn btn-gold btn-lg btn-block">✈️ Book My Pickup</button>
+        </form>
+      </div>
+
+      <!-- RIGHT -->
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        {% if new_booking %}
+        <div style="background:rgba(16,185,129,.07);border:2px solid rgba(16,185,129,.35);border-radius:var(--radius-xl);padding:2rem;text-align:center;">
+          <div style="font-size:2.75rem;margin-bottom:.625rem;">✅</div>
+          <h3 style="font-weight:800;color:var(--navy);margin-bottom:.35rem;">Pickup Confirmed!</h3>
+          <p style="color:var(--text-mid);font-size:.875rem;margin-bottom:1.25rem;">Your airport transfer has been arranged.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+            <div style="background:var(--surface);border-radius:10px;padding:1rem;">
+              <div style="font-size:.65rem;color:var(--text-light);text-transform:uppercase;font-weight:700;margin-bottom:.2rem;">Driver</div>
+              <div style="font-weight:800;color:var(--navy);font-size:.9rem;">{{ new_booking.driver }}</div>
+            </div>
+            <div style="background:var(--surface);border-radius:10px;padding:1rem;">
+              <div style="font-size:.65rem;color:var(--text-light);text-transform:uppercase;font-weight:700;margin-bottom:.2rem;">Vehicle</div>
+              <div style="font-weight:800;color:var(--navy);font-size:.9rem;">{{ new_booking.vehicle }}</div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div style="background:var(--surface);border-radius:var(--radius-xl);padding:1.75rem;border:1px solid var(--border-light);box-shadow:var(--shadow-xs);">
+          <div style="font-size:.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:1.1rem;">Pickup Includes</div>
+          {% for icon, title, desc in [
+            ("🚗","Private Vehicle","Land Cruiser, Lexus, GMC Yukon, or sedan"),
+            ("👔","Professional Driver","Uniformed English-speaking driver with nameplate"),
+            ("📱","Real-time Tracking","Flight monitoring + WhatsApp updates"),
+            ("🎁","Welcome Pack","UAE SIM guide, city map, information pack"),
+            ("🕐","24/7 Availability","Round-the-clock for all flight arrivals"),
+            ("🧳","Luggage Assistance","Full assistance from carousel to vehicle"),
+          ] %}
+          <div style="display:flex;gap:.75rem;margin-bottom:.875rem;align-items:flex-start;">
+            <div style="font-size:1.2rem;width:30px;flex-shrink:0;">{{ icon }}</div>
+            <div><div style="font-size:.855rem;font-weight:700;color:var(--navy);">{{ title }}</div><div style="font-size:.78rem;color:var(--text-mid);">{{ desc }}</div></div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div style="background:var(--navy-card);border-radius:var(--radius-xl);padding:1.75rem;border:1px solid rgba(201,168,76,.15);">
+          <div style="font-size:.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Arrival Day Checklist</div>
+          {% for task in ["Have passport & visa documents ready","Collect luggage from the carousel","Clear UAE Customs & Immigration","Find driver in arrivals with nameplate","Insert UAE SIM card (airport shops)","Exchange currency if needed","Proceed to temporary accommodation"] %}
+          <div style="display:flex;gap:.625rem;align-items:center;margin-bottom:.625rem;">
+            <div style="width:18px;height:18px;background:rgba(201,168,76,.2);border:1.5px solid rgba(201,168,76,.5);border-radius:5px;flex-shrink:0;"></div>
+            <span style="font-size:.835rem;color:rgba(255,255,255,.82);">{{ task }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {% if pickups %}
+    <div style="margin-top:3rem;"><div class="eyebrow">Booking History</div><h2 class="section-title" style="margin-bottom:1.25rem;">Recent <span class="gradient-text">Pickups</span></h2></div>
+    <div class="tbl-wrap">
+      <table class="data-tbl">
+        <thead><tr><th>#</th><th>Passenger</th><th>Flight</th><th>Arrival</th><th>Time</th><th>Terminal</th><th>Driver</th><th>Vehicle</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for p in pickups %}
+          <tr>
+            <td><strong>#{{ p.id }}</strong></td>
+            <td>{{ p.passenger_name }}</td>
+            <td><span class="badge badge-gold">{{ p.flight_number }}</span></td>
+            <td>{{ p.arrival_date }}</td>
+            <td>{{ p.arrival_time }}</td>
+            <td>{{ p.terminal }}</td>
+            <td>{{ p.driver_name or "—" }}</td>
+            <td style="font-size:.78rem;">{{ p.vehicle or "—" }}</td>
+            <td><span class="badge {{ 'badge-success' if p.status == 'confirmed' else 'badge-gold' }}">{{ p.status.title() }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
