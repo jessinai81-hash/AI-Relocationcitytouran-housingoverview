@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Relocation & Housing Concierge — Abu Dhabi{% endblock %}</title>
+  <title>{% block title %}Cleveland Clinic Abu Dhabi — Relocation & Housing Concierge{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   {% block extra_head %}{% endblock %}
 </head>
@@ -23,10 +23,10 @@
 <nav class="navbar" id="navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
-      <div class="brand-logo">🏙️</div>
+      <img src="{{ url_for('static', filename='images/CCAD.png') }}" alt="Cleveland Clinic Abu Dhabi" class="brand-logo-img" />
       <div>
-        <div class="brand-name">Relocation Concierge</div>
-        <div class="brand-sub">Abu Dhabi · UAE</div>
+        <div class="brand-name">Cleveland Clinic Abu Dhabi</div>
+        <div class="brand-sub">Relocation &amp; Housing Concierge</div>
       </div>
     </a>
     <button class="navbar-toggle" onclick="document.querySelector('.navbar-nav').classList.toggle('open')" aria-label="Menu">☰</button>
@@ -65,10 +65,10 @@
     <div class="footer-grid">
       <div>
         <div class="footer-logo">
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🏙️</div>
-          Relocation Concierge
+          <img src="{{ url_for('static', filename='images/CCAD.png') }}" alt="Cleveland Clinic Abu Dhabi" style="height:36px;width:auto;border-radius:6px;" />
+          Cleveland Clinic Abu Dhabi
         </div>
-        <p class="footer-desc">Your trusted partner for seamless relocation to Abu Dhabi, UAE. From arrival to a settled home — expert guidance every step of the way.</p>
+        <p class="footer-desc">Cleveland Clinic Abu Dhabi's trusted relocation concierge. From arrival to a settled home — expert guidance every step of the way.</p>
         <div class="footer-chips">
           <span class="footer-chip">🇦🇪 Abu Dhabi</span>
           <span class="footer-chip">24/7 Support</span>
@@ -108,7 +108,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; 2024 Relocation & Housing Concierge — Abu Dhabi, UAE</span>
+      <span>&copy; 2024 Cleveland Clinic Abu Dhabi — Relocation &amp; Housing Concierge</span>
       <span style="display:flex;align-items:center;gap:1rem;">
         <span>Powered by AI</span>
         <span style="width:4px;height:4px;background:rgba(255,255,255,.3);border-radius:50%;"></span>

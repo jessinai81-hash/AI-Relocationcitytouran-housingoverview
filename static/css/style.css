@@ -131,6 +131,12 @@ body {
 .navbar .container { display:flex; align-items:center; justify-content:space-between; height:70px; }
 
 .navbar-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+.brand-logo-img {
+  height:42px;
+  width:auto;
+  border-radius:8px;
+  object-fit:contain;
+}
 .brand-logo {
   width:42px; height:42px;
   background:linear-gradient(135deg, var(--gold), var(--gold-light));
