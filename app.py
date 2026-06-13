@@ -15,7 +15,11 @@ app = Flask(__name__)
 app.secret_key = "relocation_concierge_2024_abudhabi"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "database", "relocation.db")
+# Vercel's filesystem is read-only except /tmp
+if os.environ.get("VERCEL"):
+    DB_PATH = "/tmp/relocation.db"
+else:
+    DB_PATH = os.path.join(BASE_DIR, "database", "relocation.db")
 
 
 # ---------------------------------------------------------------------------
@@ -766,8 +770,9 @@ def faq():
 # MAIN
 # ---------------------------------------------------------------------------
 
+init_db()
+
 if __name__ == "__main__":
-    init_db()
     print("\n" + "="*60)
     print("  Relocation & Housing Concierge Agent")
     print("  Abu Dhabi Relocation Platform")
